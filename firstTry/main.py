@@ -16,28 +16,20 @@ class MyPaintWidget(Widget):
         with self.canvas:
             Color(1, 0, 1, mode='hsv')
             d = 30.
-            Ellipse(pos=(self.posX - d / 2, self.posY - d / 2), size=(d, d))
+            Ellipse(pos=(self.posX, self.posY), size=(d, d))
             print('Pos X: %s Pos Y: %s' %(self.posX, self.posY))
 
     def setGoal(self):
         with self.canvas:
             Color(0, 1, 1, mode='hsv')
             d = 30.
-            Ellipse(pos=(self.goalX - d / 2, self.goalY - d / 2), size=(d, d))
+            Ellipse(pos=(self.goalX, self.goalY), size=(d, d))
             print('Goal X: %s Goal Y: %s' %(self.goalX, self.goalY))
     
     def update(self, dt):
         with self.canvas:
-
-            Color(0, 0, 0, mode='hsv')
-            d = 30.
-            Ellipse(pos=(self.posX - d / 2, self.posY - d / 2), size=(d, d))
-            Color(1, 0, 1, mode='hsv')
-            d = 28.
-            Ellipse(pos=(self.posX - d / 2, self.posY - d / 2), size=(d, d))
-
-            x = self.posX
-            y = self.posY
+            self.canvas.clear()
+            self.setGoal()
 
             if self.posX < self.goalX: self.posX = self.posX+1
             if self.posX > self.goalX: self.posX = self.posX-1
@@ -46,7 +38,7 @@ class MyPaintWidget(Widget):
             
             Color(1, 0, 1, mode='hsv')
             d = 30.
-            Ellipse(pos=(self.posX - d / 2, self.posY - d / 2), size=(d, d))
+            Ellipse(pos=(self.posX, self.posY), size=(d, d))
             print('Pos X: %s Pos Y: %s' %(self.posX, self.posY))
 
 class MyPaintApp(App):
@@ -59,22 +51,30 @@ class MyPaintApp(App):
         self.painter.setAgent()
         self.painter.setGoal()
         self.parent.add_widget(self.painter)
+        
         startBtn = Button(text='START')
         stopBtn = Button(text='STOP', pos=(startBtn.width, 0))
         resetBtn = Button(text='RESET', pos=(startBtn.width*2, 0))
+        quitBtn = Button(text='QUIT', pos=(startBtn.width*3, 0))
+
         startBtn.bind(on_release=self.start_experience)
         stopBtn.bind(on_release=self.stop_experience)
         resetBtn.bind(on_release=self.reset_experience)
+        quitBtn.bind(on_release=self.quit_app)
+        
         self.parent.add_widget(startBtn)
         self.parent.add_widget(stopBtn)
         self.parent.add_widget(resetBtn)
+        self.parent.add_widget(quitBtn)
+        
         return self.parent
 
     def start_experience(self, obj):
         if self.goingOn == False:
             Clock.schedule_interval(self.painter.update, 0.01)
             self.goingOn = True
-        
+
+
     def stop_experience(self, obj):
         if self.goingOn == True:
             Clock.unschedule(self.painter.update)
@@ -87,6 +87,9 @@ class MyPaintApp(App):
         self.painter.setAgent()
         self.painter.setGoal()
         self.parent.add_widget(self.painter)
+    
+    def quit_app(self, obj):
+        self.get_running_app().stop()
 
 if __name__ == '__main__':
     MyPaintApp().run()
