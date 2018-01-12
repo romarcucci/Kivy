@@ -12,11 +12,14 @@ class MyPaintWidget(Widget):
     goalX = 750
     goalY = 550
 
+    trace = 0
+
     def setAgent(self):
         with self.canvas:
             Color(1, 0, 1, mode='hsv')
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
+            self.trace = Line(points=(self.posX + d/2, self.posY + d/2))
             print('Pos X: %s Pos Y: %s' %(self.posX, self.posY))
 
     def setGoal(self):
@@ -31,14 +34,16 @@ class MyPaintWidget(Widget):
             self.canvas.clear()
             self.setGoal()
 
-            if self.posX < self.goalX: self.posX = self.posX+1
-            if self.posX > self.goalX: self.posX = self.posX-1
-            if self.posY < self.goalY: self.posY = self.posY+1
-            if self.posY > self.goalY: self.posY = self.posY-1
+            if self.posX < self.goalX: self.posX += 1
+            if self.posX > self.goalX: self.posX -= 1
+            if self.posY < self.goalY: self.posY += 1
+            if self.posY > self.goalY: self.posY -= 1
             
             Color(1, 0, 1, mode='hsv')
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
+            self.trace.points += [self.posX + d/2, self.posY + d/2]
+            Line(points = self.trace.points)
             print('Pos X: %s Pos Y: %s' %(self.posX, self.posY))
 
 class MyPaintApp(App):
