@@ -6,22 +6,28 @@ from kivy.graphics import Color, Ellipse, Line
 from kivy.clock import Clock
 
 class MyPaintWidget(Widget):
-    posX = 150
-    posY = 150   
+    posX = random() * 600 + 150
+    posY = random() * 400 + 150
+    goalX = random() * 600 + 150
+    goalY = random() * 400 + 150
 
-    goalX = 750
-    goalY = 550
+    dir = 0
+    const = 0
 
     trace = 0
 
     def setAgent(self):
         with self.canvas:
+            
             Color(1, 0, 1, mode='hsv')
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
             self.trace = Line(points=(self.posX + d/2, self.posY + d/2))
             print('Pos X: %s Pos Y: %s' %(self.posX, self.posY))
-
+            self.dir = (self.goalY - self.posY)/(self.goalX - self.posX)
+            self.const  = self.posY - self.dir*self.posX
+            print('dir: %s const: %s' %(self.dir, self.const))
+            
     def setGoal(self):
         with self.canvas:
             Color(0, 1, 1, mode='hsv')
@@ -34,11 +40,12 @@ class MyPaintWidget(Widget):
             self.canvas.clear()
             self.setGoal()
 
-            if self.posX < self.goalX: self.posX += 1
-            if self.posX > self.goalX: self.posX -= 1
-            if self.posY < self.goalY: self.posY += 1
-            if self.posY > self.goalY: self.posY -= 1
-            
+
+            if self.posX != self.goalX or self.posY != self.goalY:
+                if self.posX < self.goalX: self.posX += 1
+                if self.posX > self.goalX: self.posX -= 1
+                self.posY = self.dir*self.posX + self.const
+
             Color(1, 0, 1, mode='hsv')
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
