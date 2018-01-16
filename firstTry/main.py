@@ -6,6 +6,7 @@ from kivy.graphics import *
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.config import Config
+from kivy.uix.label import Label
 
 class MyPaintWidget(Widget):
     posX = 0
@@ -21,14 +22,25 @@ class MyPaintWidget(Widget):
     def setAgent(self):
         with self.canvas:
             self.posX = round(random() * 670 + 40)
-            self.posY = round(random() * 420 + 100 + 40)
+            self.posY = round(random() * 410 + 110 + 40)
             self.goalX = round(random() * 670 + 40)
-            self.goalY = round(random() * 420 + 100 + 40)
+            self.goalY = round(random() * 410 + 110 + 40)
             Color(1, 0, 1, mode='hsv')
-            Rectangle(pos=(5, 105), size=(740, 1))
-            Rectangle(pos=(5, 105), size=(1, 495))
+            Rectangle(pos=(5, 110), size=(740, 1))
+            Rectangle(pos=(5, 110), size=(1, 490))
             Rectangle(pos=(5, 599), size=(740, 1))
-            Rectangle(pos=(744, 105), size=(1, 495))
+            Rectangle(pos=(744, 110), size=(1, 490))
+
+            Rectangle(pos=(410, 10), size=(335, 1))
+            Rectangle(pos=(410, 99), size=(335, 1))
+            Rectangle(pos=(410, 10), size=(1, 90))
+            Rectangle(pos=(744, 10), size=(1, 90))
+
+            Label(
+                text='Pos  X: %3d             Pos  Y: %3d \n\nGoal X: %3d             Goal Y: %3d'
+                %(self.posX, self.posY, self.goalX, self.goalY), 
+                pos=(480, 10))
+
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
             self.trace = Line(points=(self.posX + d/2, self.posY + d/2))
@@ -55,11 +67,21 @@ class MyPaintWidget(Widget):
                 self.posY = round(self.dir*self.posX + self.const)
 
             Color(1, 0, 1, mode='hsv')
-            Rectangle(pos=(5, 105), size=(740, 1))
-            Rectangle(pos=(5, 105), size=(1, 495))
+            Rectangle(pos=(5, 110), size=(740, 1))
+            Rectangle(pos=(5, 110), size=(1, 490))
             Rectangle(pos=(5, 599), size=(740, 1))
-            Rectangle(pos=(744, 105), size=(1, 495))
+            Rectangle(pos=(744, 110), size=(1, 490))
 
+            Rectangle(pos=(410, 10), size=(335, 1))
+            Rectangle(pos=(410, 99), size=(335, 1))
+            Rectangle(pos=(410, 10), size=(1, 90))
+            Rectangle(pos=(744, 10), size=(1, 90))
+
+            Label(
+                text='Pos  X: %3d             Pos  Y: %3d \n\nGoal X: %3d             Goal Y: %3d'
+                %(self.posX, self.posY, self.goalX, self.goalY), 
+                pos=(480, 10))
+            
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
             self.trace.points += [self.posX + d/2, self.posY + d/2]
@@ -80,10 +102,10 @@ class MyPaintApp(App):
         self.painter.setGoal()
         self.parent.add_widget(self.painter)
         
-        startBtn = Button(text='START')
-        stopBtn = Button(text='STOP', pos=(startBtn.width, 0))
-        resetBtn = Button(text='RESET', pos=(startBtn.width*2, 0))
-        quitBtn = Button(text='QUIT', pos=(startBtn.width*3, 0))
+        startBtn = Button(text='START', pos=(5,5))
+        stopBtn = Button(text='STOP', pos=(startBtn.width + 5, 5))
+        resetBtn = Button(text='RESET', pos=(startBtn.width*2 + 5, 5))
+        quitBtn = Button(text='QUIT', pos=(startBtn.width*3 + 5, 5))
 
         startBtn.bind(on_release=self.start_experience)
         stopBtn.bind(on_release=self.stop_experience)
