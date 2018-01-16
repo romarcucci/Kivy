@@ -2,14 +2,16 @@ from random import random
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
-from kivy.graphics import Color, Ellipse, Line
+from kivy.graphics import *
 from kivy.clock import Clock
+from kivy.core.window import Window
+from kivy.config import Config
 
 class MyPaintWidget(Widget):
-    posX = random() * 600 + 150
-    posY = random() * 400 + 150
-    goalX = random() * 600 + 150
-    goalY = random() * 400 + 150
+    posX = 0
+    posY = 0
+    goalX = 0
+    goalY = 0
 
     dir = 0
     const = 0
@@ -18,8 +20,15 @@ class MyPaintWidget(Widget):
 
     def setAgent(self):
         with self.canvas:
-            
+            self.posX = round(random() * 670 + 40)
+            self.posY = round(random() * 420 + 100 + 40)
+            self.goalX = round(random() * 670 + 40)
+            self.goalY = round(random() * 420 + 100 + 40)
             Color(1, 0, 1, mode='hsv')
+            Rectangle(pos=(5, 105), size=(740, 1))
+            Rectangle(pos=(5, 105), size=(1, 495))
+            Rectangle(pos=(5, 599), size=(740, 1))
+            Rectangle(pos=(744, 105), size=(1, 495))
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
             self.trace = Line(points=(self.posX + d/2, self.posY + d/2))
@@ -27,7 +36,7 @@ class MyPaintWidget(Widget):
             self.dir = (self.goalY - self.posY)/(self.goalX - self.posX)
             self.const  = self.posY - self.dir*self.posX
             print('dir: %s const: %s' %(self.dir, self.const))
-            
+
     def setGoal(self):
         with self.canvas:
             Color(0, 1, 1, mode='hsv')
@@ -40,13 +49,17 @@ class MyPaintWidget(Widget):
             self.canvas.clear()
             self.setGoal()
 
-
             if self.posX != self.goalX or self.posY != self.goalY:
                 if self.posX < self.goalX: self.posX += 1
                 if self.posX > self.goalX: self.posX -= 1
-                self.posY = self.dir*self.posX + self.const
+                self.posY = round(self.dir*self.posX + self.const)
 
             Color(1, 0, 1, mode='hsv')
+            Rectangle(pos=(5, 105), size=(740, 1))
+            Rectangle(pos=(5, 105), size=(1, 495))
+            Rectangle(pos=(5, 599), size=(740, 1))
+            Rectangle(pos=(744, 105), size=(1, 495))
+
             d = 30.
             Ellipse(pos=(self.posX, self.posY), size=(d, d))
             self.trace.points += [self.posX + d/2, self.posY + d/2]
@@ -58,7 +71,10 @@ class MyPaintApp(App):
     goingOn = False
     parent = MyPaintWidget()
 
-    def build(self):        
+    def build(self):
+        
+        Window.size = (750, 610)
+        Config.set('graphics', 'resizable', False)
         self.painter = MyPaintWidget()
         self.painter.setAgent()
         self.painter.setGoal()
@@ -85,7 +101,6 @@ class MyPaintApp(App):
         if self.goingOn == False:
             Clock.schedule_interval(self.painter.update, 0.01)
             self.goingOn = True
-
 
     def stop_experience(self, obj):
         if self.goingOn == True:
